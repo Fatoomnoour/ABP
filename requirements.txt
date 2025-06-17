@@ -1,7 +1,6 @@
 ﻿streamlit
 requests
 
-python==3.9.0
 absl-py==2.2.2
 astunparse==1.6.3
 blinker==1.9.0
