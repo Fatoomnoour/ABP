@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: abp-estimation-api
+    runtime: docker
+    plan: free
+    region: frankfurt
+    branch: main
+    autoDeployTrigger: checksPass
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /
+    envVars:
+      - key: ENABLE_NGROK
+        value: "false"
+      - key: PORT
+        value: "10000"

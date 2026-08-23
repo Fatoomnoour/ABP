@@ -53,3 +53,48 @@ def test_predict_wrong_size(client):
     payload = {"ppg": [0.1] * 100, "ecg": [0.1] * 250}
     response = client.post("/predict", json=payload)
     assert response.status_code == 400
+
+
+class FailingBundle:
+    def predict(self, payload):
+        raise RuntimeError("private model failure")
+
+
+def test_predict_rejects_invalid_json(client):
+    response = client.post(
+        "/predict",
+        data="{not-json}",
+        content_type="application/json",
+    )
+    assert response.status_code == 400
+    assert response.get_json() == {"error": "Request body must be valid JSON"}
+
+
+def test_predict_rejects_non_object_json(client):
+    response = client.post("/predict", json=[0.1] * 250)
+    assert response.status_code == 400
+    assert "JSON object" in response.get_json()["error"]
+
+
+@pytest.mark.parametrize(
+    "field,value,error_text",
+    [
+        ("ppg", "not-a-list", "must be a JSON list"),
+        ("ecg", ["bad"] * 250, "only numeric values"),
+        ("ppg", [float("nan")] + [0.1] * 249, "only finite values"),
+    ],
+)
+def test_predict_rejects_invalid_signal_values(client, field, value, error_text):
+    payload = {"ppg": [0.1] * 250, "ecg": [0.2] * 250}
+    payload[field] = value
+    response = client.post("/predict", json=payload)
+    assert response.status_code == 400
+    assert error_text in response.get_json()["error"]
+
+
+def test_predict_hides_unexpected_model_errors():
+    client = create_app(model_bundle=FailingBundle()).test_client()
+    response = client.post("/predict", json={"ppg": [0.1] * 250, "ecg": [0.2] * 250})
+    assert response.status_code == 500
+    assert response.get_json() == {"error": "Prediction failed"}
+    assert "private model failure" not in response.get_data(as_text=True)
