@@ -60,6 +60,7 @@ flowchart LR
 ├── render.yaml                    # Render Free Blueprint
 ├── .dockerignore
 ├── .env.example
+├── .streamlit/config.toml          # Streamlit theme and server defaults
 ├── requirements.txt                # Streamlit Community Cloud
 ├── requirements-api.txt            # Flask/Docker API
 └── requirements-dev.txt             # CI and local tests
@@ -82,7 +83,7 @@ cp .env.example .env
 python app.py
 ```
 
-The API starts on `http://localhost:5000`. **ngrok is disabled by default**; local development does not need a public tunnel. The first start loads the checked-in Keras model and scalers, so startup can take longer than a lightweight Flask application.
+The API starts on `http://localhost:5000`. **ngrok is disabled by default**; local development does not need a public tunnel. The first start loads the checked-in Keras model and scalers, so startup can take longer than a lightweight Flask application. For the Streamlit interface, install from `requirements.txt` and run `streamlit run streamlit_app.py`; for Flask/Docker, install from `requirements-api.txt`.
 
 ### Docker
 
@@ -94,7 +95,7 @@ docker run --rm -p 5000:5000 -e PORT=5000 abp-estimation-api
 The image runs Gunicorn with one worker and two threads. The container defaults to port `5000`; platforms such as Render can override `PORT` at runtime. Verify the container from another terminal:
 
 ```bash
-curl -fsS http://localhost:5000/
+curl -fsS http://localhost:5000/health
 ```
 
 To use a tunnel for a temporary demo, pass the token only at runtime. Never commit it to source control:
@@ -121,6 +122,10 @@ python -m ruff check .
 ### `GET /`
 
 Returns service status, model availability, and the expected signal format.
+
+### `GET /health`
+
+Returns a compact `status` and `model_loaded` response suitable for platform health checks and uptime monitors.
 
 ### `POST /predict`
 

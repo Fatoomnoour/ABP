@@ -39,25 +39,39 @@ def create_app(
     app.config["ABP_SETTINGS"] = settings
     app.extensions["abp_model"] = bundle
 
+    def service_status() -> dict[str, Any]:
+        """Build a lightweight status payload for health checks and discovery."""
+
+        return {
+            "service": "ABP Estimation API",
+            "status": "ok",
+            "model_loaded": app.extensions["abp_model"] is not None,
+            "endpoints": {
+                "/predict": {
+                    "method": "POST",
+                    "description": "Predict mean ABP from 250 PPG and ECG samples",
+                    "input_format": {
+                        "ppg": f"list of {settings.sample_size} numeric values",
+                        "ecg": f"list of {settings.sample_size} numeric values",
+                    },
+                }
+            },
+        }
+
     @app.get("/")
     def home() -> Any:
         """Return the service status and inference contract."""
 
+        return jsonify(service_status())
+
+    @app.get("/health")
+    def health() -> Any:
+        """Return a small platform-friendly health response."""
+
         return jsonify(
             {
-                "service": "ABP Estimation API",
                 "status": "ok",
                 "model_loaded": app.extensions["abp_model"] is not None,
-                "endpoints": {
-                    "/predict": {
-                        "method": "POST",
-                        "description": "Predict mean ABP from 250 PPG and ECG samples",
-                        "input_format": {
-                            "ppg": f"list of {settings.sample_size} numeric values",
-                            "ecg": f"list of {settings.sample_size} numeric values",
-                        },
-                    }
-                },
             }
         )
 

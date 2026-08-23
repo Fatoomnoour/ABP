@@ -34,6 +34,12 @@ def test_health_check(client):
     assert response.get_json()["model_loaded"] is True
 
 
+def test_health_endpoint_is_platform_friendly(client):
+    response = client.get("/health")
+    assert response.status_code == 200
+    assert response.get_json() == {"status": "ok", "model_loaded": True}
+
+
 def test_predict_valid_input(client):
     payload = {"ppg": [0.1] * 250, "ecg": [0.2] * 250}
     response = client.post("/predict", json=payload)
