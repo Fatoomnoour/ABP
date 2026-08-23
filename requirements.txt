@@ -4,4 +4,4 @@ pyngrok==7.2.8
 requests==2.32.3
 scipy==1.15.3
 scikit-learn==1.6.1
-tensorflow==2.15.1
+tensorflow-cpu==2.15.1

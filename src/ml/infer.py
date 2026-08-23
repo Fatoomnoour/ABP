@@ -7,14 +7,14 @@ import logging
 import os
 
 import numpy as np
-from tensorflow.keras.models import load_model
 from tensorflow.keras.losses import MeanSquaredError
+from tensorflow.keras.models import load_model
 
 from src.ml.preprocessing import (
     load_scalers,
-    validate_signal,
-    prepare_input,
     postprocess_output,
+    prepare_input,
+    validate_signal,
 )
 
 logger = logging.getLogger(__name__)
@@ -35,11 +35,17 @@ class ABPInferenceEngine:
         scaler_x_path: str = None,
         scaler_y_path: str = None,
     ):
-        self.model_path   = model_path   or os.getenv("MODEL_PATH",    "models/CNN_LSTM_Model_256.h5")
-        self.scaler_x_path = scaler_x_path or os.getenv("SCALER_X_PATH", "models/scaler_X.pkl")
-        self.scaler_y_path = scaler_y_path or os.getenv("SCALER_Y_PATH", "models/scaler_y.pkl")
+        self.model_path = model_path or os.getenv(
+            "MODEL_PATH", "models/CNN_LSTM_Model_256.h5"
+        )
+        self.scaler_x_path = scaler_x_path or os.getenv(
+            "SCALER_X_PATH", "models/scaler_X.pkl"
+        )
+        self.scaler_y_path = scaler_y_path or os.getenv(
+            "SCALER_Y_PATH", "models/scaler_y.pkl"
+        )
 
-        self._model    = None
+        self._model = None
         self._scaler_X = None
         self._scaler_y = None
 

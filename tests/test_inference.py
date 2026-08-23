@@ -6,8 +6,7 @@ Run with: pytest tests/test_inference.py -v
 import numpy as np
 import pytest
 
-from src.ml.preprocessing import validate_signal, prepare_input
-
+from src.ml.preprocessing import prepare_input, validate_signal
 
 # ─── validate_signal ──────────────────────────────────────────────────────────
 
@@ -52,7 +51,7 @@ def test_prepare_input_channel_order():
     ppg = np.ones(250, dtype=np.float32) * 2.0
     ecg = np.ones(250, dtype=np.float32) * 5.0
     scaler = MockScaler()
-    result = prepare_input(ppg, ecg, scaler)
+    prepare_input(ppg, ecg, scaler)
     # After reshape/transform, check original stacking order
     stacked = np.stack((ppg.reshape(1, 250), ecg.reshape(1, 250)), axis=-1)
     assert stacked.shape == (1, 250, 2)

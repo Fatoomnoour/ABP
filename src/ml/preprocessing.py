@@ -23,7 +23,9 @@ def load_scalers(scaler_x_path: str, scaler_y_path: str):
     return scaler_X, scaler_y
 
 
-def validate_signal(signal: list, name: str, expected_size: int = SAMPLE_SIZE) -> np.ndarray:
+def validate_signal(
+    signal: list, name: str, expected_size: int = SAMPLE_SIZE
+) -> np.ndarray:
     """
     Validate and convert a biosignal list to numpy array.
 
