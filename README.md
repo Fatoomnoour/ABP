@@ -246,7 +246,7 @@ If the Render service sleeps, the first request after inactivity can be slow whi
 
 ## PythonAnywhere Free: Known Limitation
 
-PythonAnywhere can create a Python 3.11 WSGI app without a paid plan, and the repository includes `pythonanywhere_wsgi.py` for that setup. However, this ABP repository is **not deployable on the current PythonAnywhere Free storage quota** with its full TensorFlow dependency stack: installing `tensorflow-cpu==2.15.1` failed with `OSError: [Errno 122] Disk quota exceeded` even after clearing pip cache and retrying with `--no-cache-dir`. Use the Streamlit Community Cloud path above for the free interactive demo, or use Render/Docker when card verification and a larger runtime are available.
+PythonAnywhere can create a Python 3.11 WSGI app without a paid plan, and the repository includes `pythonanywhere_wsgi.py` for that setup. However, this ABP repository is **not deployable on the current PythonAnywhere Free storage quota** with its full TensorFlow dependency stack: the prior installation attempt with `tensorflow-cpu==2.15.1` failed with `OSError: [Errno 122] Disk quota exceeded` even after clearing pip cache and retrying with `--no-cache-dir`. Use the Streamlit Community Cloud path above for the free interactive demo, or use Render/Docker when card verification and a larger runtime are available.
 
 ## Current Hosting Status
 
@@ -256,7 +256,7 @@ For platform-specific instructions, see [PythonAnywhere Flask deployment](https:
 
 ## Deploy a Free Interactive Demo on Streamlit Community Cloud
 
-The current repository also includes `streamlit_app.py`, a small interactive frontend that uses the same `ABPInferenceEngine` and checked-in model artifacts. This is the recommended no-card path after PythonAnywhere Free rejected the TensorFlow installation because its 512 MB storage quota was exceeded. Streamlit Community Cloud deploys public GitHub repositories for free and installs Python dependencies from `requirements.txt`.
+The current repository also includes `streamlit_app.py`, a small interactive frontend that uses the same `ABPInferenceEngine` and checked-in model artifacts. This is the recommended no-card path after PythonAnywhere Free rejected the TensorFlow installation because its 512 MB storage quota was exceeded. Streamlit Community Cloud deploys public GitHub repositories for free and installs Python dependencies from `requirements.txt`. In the deployment dialog, select Python 3.12 (the current default) or Python 3.11 in **Advanced settings**; both are supported by the pinned TensorFlow CPU wheel.
 
 1. Sign in to [Streamlit Community Cloud](https://streamlit.io/cloud) with GitHub and authorize access to `Fatoomnoour/ABP`.
 2. Create an app from the `main` branch and set the main file path to `streamlit_app.py`.
