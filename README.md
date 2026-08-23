@@ -241,35 +241,16 @@ If the Render service sleeps, the first request after inactivity can be slow whi
 1. [Render: Deploy for Free](https://render.com/docs/free)
 2. [Render: Docker Deployments](https://render.com/docs/docker)
 3. [Render: Blueprint YAML Reference](https://render.com/docs/blueprint-spec)
+4. [Streamlit Community Cloud](https://streamlit.io/cloud)
+5. [Streamlit app dependencies](https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/app-dependencies)
 
-## Deploy on PythonAnywhere Free (No Docker)
+## PythonAnywhere Free: Known Limitation
 
-If Render requests card verification, PythonAnywhere is the no-card alternative for a small Flask portfolio demo. PythonAnywhere runs Flask through a WSGI configuration rather than the repository Dockerfile. The repository includes `pythonanywhere_wsgi.py` as a starting point; the file uses `ABP_PROJECT_ROOT` when set and otherwise expects the repository at `/home/yourusername/ABP`.
-
-Create a PythonAnywhere account, open a Bash console, and clone the public repository:
-
-```bash
-git clone https://github.com/Fatoomnoour/ABP.git ~/ABP
-cd ~/ABP
-python3.11 -m venv ~/.virtualenvs/abp
-source ~/.virtualenvs/abp/bin/activate
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
-```
-
-In the **Web** tab, create a Flask web app using the Python 3.11 runtime if it is available, select the virtual environment path `~/.virtualenvs/abp`, and point the WSGI configuration to the repository file. If the dashboard creates its own WSGI file, replace its contents with the following and change the path to your actual username:
-
-```python
-import sys
-sys.path.insert(0, "/home/yourusername/ABP")
-from app import app as application
-```
-
-Do not enable ngrok on the hosted service. Reload the web app, then open the generated `yourusername.pythonanywhere.com` URL and call `/`. The same `/predict` request contract described above applies. PythonAnywhere's free account is best treated as a demo environment: it has limited workers and resources, and the account's current limits should be checked before installing the TensorFlow dependency.
+PythonAnywhere can create a Python 3.11 WSGI app without a paid plan, and the repository includes `pythonanywhere_wsgi.py` for that setup. However, this ABP repository is **not deployable on the current PythonAnywhere Free storage quota** with its full TensorFlow dependency stack: installing `tensorflow-cpu==2.15.1` failed with `OSError: [Errno 122] Disk quota exceeded` even after clearing pip cache and retrying with `--no-cache-dir`. Use the Streamlit Community Cloud path above for the free interactive demo, or use Render/Docker when card verification and a larger runtime are available.
 
 ## Current Hosting Status
 
-The previous Railway deployment entries are historical failed deployments from the expired trial period. Render supports the repository's Docker setup, but its current account flow requested card verification before creating a Blueprint. No card details were entered and no paid action was performed. The code and `render.yaml` are ready for Render if verification is acceptable; otherwise use the PythonAnywhere WSGI path above and provide the resulting public URL for an external smoke test.
+The previous Railway deployment entries are historical failed deployments from the expired trial period. Render supports the repository's Docker setup, but its current account flow requested card verification before creating a Blueprint. No card details were entered and no paid action was performed. The code and `render.yaml` are ready for Render if verification is acceptable. For a no-card demo, deploy `streamlit_app.py` through Streamlit Community Cloud; PythonAnywhere is documented above only to record its storage limitation for this dependency set.
 
 For platform-specific instructions, see [PythonAnywhere Flask deployment](https://help.pythonanywhere.com/pages/FlaskWithTheNewWebsiteSystem/), [Render free services](https://render.com/docs/free), and [Render Docker deployments](https://render.com/docs/docker).
 
