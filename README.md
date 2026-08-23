@@ -60,8 +60,9 @@ flowchart LR
 ├── render.yaml                    # Render Free Blueprint
 ├── .dockerignore
 ├── .env.example
-├── requirements.txt
-└── requirements-dev.txt
+├── requirements.txt                # Streamlit Community Cloud
+├── requirements-api.txt            # Flask/Docker API
+└── requirements-dev.txt             # CI and local tests
 ```
 
 ## Quick Start
@@ -76,7 +77,7 @@ cd ABP
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
+python -m pip install -r requirements-api.txt
 cp .env.example .env
 python app.py
 ```
@@ -260,7 +261,7 @@ The current repository also includes `streamlit_app.py`, a small interactive fro
 
 1. Sign in to [Streamlit Community Cloud](https://streamlit.io/cloud) with GitHub and authorize access to `Fatoomnoour/ABP`.
 2. Create an app from the `main` branch and set the main file path to `streamlit_app.py`.
-3. Keep the Python runtime at 3.11, wait for dependency installation, and open the generated `streamlit.app` URL.
+3. Select Python 3.12 in **Advanced settings** (or Python 3.11 if you explicitly need it), wait for dependency installation, and open the generated `streamlit.app` URL.
 4. Paste two JSON arrays containing exactly 250 finite numeric values each, then click **Predict ABP**.
 
 The original Flask REST API remains available for Docker/Render deployments through `app.py`; Streamlit is a separate public demo entry point and does not replace the `/predict` API contract. The Streamlit demo caches the model per process, validates malformed JSON and signal length before loading the model, and provides a downloadable JSON prediction. Because this is an educational medical-signal demo, do not use its output for diagnosis or treatment.
