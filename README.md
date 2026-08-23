@@ -272,3 +272,16 @@ Do not enable ngrok on the hosted service. Reload the web app, then open the gen
 The previous Railway deployment entries are historical failed deployments from the expired trial period. Render supports the repository's Docker setup, but its current account flow requested card verification before creating a Blueprint. No card details were entered and no paid action was performed. The code and `render.yaml` are ready for Render if verification is acceptable; otherwise use the PythonAnywhere WSGI path above and provide the resulting public URL for an external smoke test.
 
 For platform-specific instructions, see [PythonAnywhere Flask deployment](https://help.pythonanywhere.com/pages/FlaskWithTheNewWebsiteSystem/), [Render free services](https://render.com/docs/free), and [Render Docker deployments](https://render.com/docs/docker).
+
+## Deploy a Free Interactive Demo on Streamlit Community Cloud
+
+The current repository also includes `streamlit_app.py`, a small interactive frontend that uses the same `ABPInferenceEngine` and checked-in model artifacts. This is the recommended no-card path after PythonAnywhere Free rejected the TensorFlow installation because its 512 MB storage quota was exceeded. Streamlit Community Cloud deploys public GitHub repositories for free and installs Python dependencies from `requirements.txt`.
+
+1. Sign in to [Streamlit Community Cloud](https://streamlit.io/cloud) with GitHub and authorize access to `Fatoomnoour/ABP`.
+2. Create an app from the `main` branch and set the main file path to `streamlit_app.py`.
+3. Keep the Python runtime at 3.11, wait for dependency installation, and open the generated `streamlit.app` URL.
+4. Paste two JSON arrays containing exactly 250 finite numeric values each, then click **Predict ABP**.
+
+The original Flask REST API remains available for Docker/Render deployments through `app.py`; Streamlit is a separate public demo entry point and does not replace the `/predict` API contract. The Streamlit demo caches the model per process, validates malformed JSON and signal length before loading the model, and provides a downloadable JSON prediction. Because this is an educational medical-signal demo, do not use its output for diagnosis or treatment.
+
+PythonAnywhere Free cannot currently host the full `tensorflow-cpu==2.15.1` dependency set in this account: the installation reached the 207.2 MB wheel and failed with `OSError: [Errno 122] Disk quota exceeded`. Render remains a Docker-ready option, but its account flow requested card verification before service creation. Neither a paid service nor card details were used.
